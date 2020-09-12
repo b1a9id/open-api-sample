@@ -2,40 +2,44 @@ package com.b1a9idps.openapisample.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import com.b1a9idps.openapisample.entity.Sake;
 import com.b1a9idps.openapisample.excepton.NotFoundException;
+import com.b1a9idps.openapisample.repository.SakeRepository;
 import com.b1a9idps.openapisample.request.SakeCreateRequest;
 import com.b1a9idps.openapisample.response.SakeResponse;
 import com.b1a9idps.openapisample.service.SakeService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SakeServiceImpl implements SakeService {
+
+    private final SakeRepository sakeRepository;
 
     @Override
     public List<SakeResponse> list() {
-        return sakeResponseStream().collect(Collectors.toList());
+        return sakeRepository.findAll().stream()
+                .map(SakeResponse::newInstance)
+                .collect(Collectors.toList());
     }
 
     @Override
     public SakeResponse get(Integer id) {
-        return sakeResponseStream()
-                .filter(sake -> sake.getId().equals(id))
-                .findFirst()
+        return sakeRepository.findById(id)
+                .map(SakeResponse::newInstance)
                 .orElseThrow(NotFoundException::new);
     }
 
     @Override
     public SakeResponse create(SakeCreateRequest request) {
-        return new SakeResponse(4, request.getName(), request.getBrewingName());
-    }
+        Sake sake = new Sake();
+        sake.setName(request.getName());
+        sake.setBrewingName(request.getBrewingName());
 
-    private Stream<SakeResponse> sakeResponseStream() {
-        return Stream.of(
-                new SakeResponse(1, "若波", "若波酒造"),
-                new SakeResponse(2, "新政", "新政酒造"),
-                new SakeResponse(3, "十四代", "高木酒造"));
+        return SakeResponse.newInstance(sakeRepository.save(sake));
     }
 }
