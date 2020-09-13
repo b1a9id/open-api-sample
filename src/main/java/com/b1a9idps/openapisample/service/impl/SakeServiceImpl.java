@@ -3,6 +3,8 @@ package com.b1a9idps.openapisample.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.b1a9idps.openapisample.entity.Sake;
@@ -19,6 +21,12 @@ import lombok.RequiredArgsConstructor;
 public class SakeServiceImpl implements SakeService {
 
     private final SakeRepository sakeRepository;
+
+    @Override
+    public Page<SakeResponse> page(Pageable pageable) {
+        return sakeRepository.findAll(pageable)
+                .map(SakeResponse::newInstance);
+    }
 
     @Override
     public List<SakeResponse> list() {

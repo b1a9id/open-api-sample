@@ -3,6 +3,9 @@ package com.b1a9idps.openapisample.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +34,11 @@ public class SakeController {
     private final SakeService sakeService;
 
     @GetMapping
+    public Page<SakeResponse> page(@PageableDefault Pageable pageable) {
+        return sakeService.page(pageable);
+    }
+
+    @GetMapping("list")
     public List<SakeResponse> list() {
         return sakeService.list();
     }
