@@ -1,4 +1,7 @@
 # Sample for springdoc-openapi
+<a href="https://trackgit.com">
+<img src="https://sfy.cx/u/xdf" alt="trackgit-views" />
+</a>
 
 ## Try it
 Run App
